@@ -1,9 +1,7 @@
 import logging
-from openai.openai_object import OpenAIObject
 from typing import Any, Callable, Dict, List, Optional, Sequence, Type
 
-from llama_index.bridge.pydantic import BaseModel
-
+from openai.openai_object import OpenAIObject
 from tenacity import (
     before_sleep_log,
     retry,
@@ -12,6 +10,7 @@ from tenacity import (
     wait_exponential,
 )
 
+from llama_index.bridge.pydantic import BaseModel
 from llama_index.llms.base import ChatMessage
 
 MISSING_API_KEY_ERROR_MESSAGE = """No API key found for LLM.
@@ -104,7 +103,7 @@ def openai_modelname_to_contextsize(modelname: str) -> int:
         modelname = modelname.split(":")[0]
 
     try:
-        context_size = litellm.get_max_tokens(modelname)
+        context_size = int(litellm.get_max_tokens(modelname)["max_tokens"])
     except Exception:
         context_size = 2048  # by default assume models have at least 2048 tokens
 
